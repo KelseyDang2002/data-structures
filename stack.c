@@ -54,8 +54,10 @@ void push(Stack *stack, int value) {
 }
 
 // method to pop element from top of stack
+int pop();
 
 // method to return topmost element from stack
+int peek();
 
 int main(int argc, char* argv[]) {
     Stack stack;
