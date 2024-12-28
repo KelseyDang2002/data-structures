@@ -10,7 +10,7 @@ typedef struct Array {
 // method to create array
 Array create_array(int size) {
     Array arr;
-    arr.data = (int*)malloc(size * sizeof(int));
+    arr.data = (int*)malloc(size * sizeof(int)); // use malloc for dynamic memory
     arr.size = size;
     return arr;
 }
