@@ -14,19 +14,43 @@ void init_stack(Stack *stack) {
     stack->top = -1; // set top index to -1 which indicates empty stack
 }
 
-// method to check if stack is empty
+/*
+method to check if stack is empty
+
+Stack is empty or not:
+    Time Complexity: O(1)
+    Space Complexity: O(1)
+    It only performs an arithmetic operation to check if the stack is empty or not.
+    It requires no extra space.
+*/
 bool is_empty(Stack *stack) {
     return stack->top == -1; // if top index is -1, then stack is empty
 }
 
-// method to check is stack is full
+/*
+method to check is stack is full
+
+Stack is full or not:
+    Time Complexity: O(1)
+    Space Complexity: O(1)
+    It only performs an arithmetic operation to check if the stack is full or not.
+    It requires no extra space.
+*/
 bool is_full(Stack *stack) {
     return stack->top == MAX_SIZE - 1; // if top index is MAX_SIZE - 1, then stack is full
 }
 
-// method to display current stack
+/*
+method to display current stack
+
+Current size of the stack:
+    Time Complexity: O(1)
+    Space Complexity: O(1)
+    This operation just performs a basic operation.
+    No extra space is required to calculate the value of the top pointer.
+*/
 void display_stack(Stack *stack) {
-    printf("\nStack (%d):\n", (stack->top) + 1); // number of elements in stack
+    printf("\nStack (%d):\n", (stack->top) + 1); // size of stack
 
     // if stack is empty
     if (is_empty(stack)) {
@@ -40,7 +64,16 @@ void display_stack(Stack *stack) {
     }
 }
 
-// method to push element to top of stack
+/*
+method to push element to top of stack 
+
+Push element on top of stack:
+    Time Complexity: O(1)
+    Space Complexity: O(1)
+    In the push function a single element is inserted at the last position. This takes a
+    single memory allocation operation which is done in constant time. Space complexity is
+    constant as no extra space is being used.
+*/
 void push(Stack *stack, int value) {
     // check if stack is full before pushing element
     if (is_full(stack)) {
@@ -53,7 +86,16 @@ void push(Stack *stack, int value) {
     printf("\nPushed %d to top of stack.\n", value);
 }
 
-// method to pop element from top of stack
+/*
+method to pop element from top of stack
+
+Pop element from top of stack:
+    Time Complexity: O(1)
+    Space Complexity: O(1)
+    In array implementation, only an arithmetic operation is performed i.e., the top pointer
+    is decremented by 1. This is a constant time function. No extra space is utilized for
+    deleting an element from the stack.
+*/
 int pop(Stack *stack) {
     // check if stack is empty
     if (is_empty(stack)) {
@@ -67,7 +109,15 @@ int pop(Stack *stack) {
     return popped;
 }
 
-// method to return topmost element from stack
+/*
+method to return topmost element from stack 
+
+Peek the topmost element of the stack:
+    Time Complexity: O(1)
+    Space Complexity: O(1)
+    Only a memory address is accessed. This is a constant time operation.
+    No extra space is utilized to access the value.
+*/
 int peek(Stack *stack) {
     // if stack is empty
     if (is_empty(stack)) {
