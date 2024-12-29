@@ -44,7 +44,7 @@ void display_stack(Stack *stack) {
 void push(Stack *stack, int value) {
     // check if stack is full before pushing element
     if (is_full(stack)) {
-        printf("\nStack overflow, can't push %d\n", value);
+        printf("\nStack overflow, can't push %d.\n", value);
         return;
     }
 
@@ -54,10 +54,28 @@ void push(Stack *stack, int value) {
 }
 
 // method to pop element from top of stack
-int pop();
+int pop(Stack *stack) {
+    // check if stack is empty
+    if (is_empty(stack)) {
+        printf("\nStack underflow, can't pop.\n");
+        return -1;
+    }
+
+    int popped = stack->arr[stack->top]; // return top element
+    stack->top--; // decrement top pointer
+    printf("\nPopped %d from the stack.\n", popped);
+    return popped;
+}
 
 // method to return topmost element from stack
-int peek();
+int peek(Stack *stack) {
+    // if stack is empty
+    if (is_empty(stack)) {
+        printf("Stack is empty.\n");
+        return -1;
+    }
+    return stack->arr[stack->top]; // return top element of stack without removing it
+}
 
 int main(int argc, char* argv[]) {
     Stack stack;
@@ -96,6 +114,15 @@ int main(int argc, char* argv[]) {
 
     push(&stack, 2048);
     display_stack(&stack);
+
+    pop(&stack);
+    pop(&stack);
+    pop(&stack);
+    pop(&stack);
+    pop(&stack);
+    display_stack(&stack);
+
+    printf("\nTop of stack: %d\n", peek(&stack));
 
     return 0;
 }
