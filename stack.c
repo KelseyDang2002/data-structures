@@ -50,15 +50,14 @@ Current size of the stack:
     No extra space is required to calculate the value of the top pointer.
 */
 void display_stack(Stack *stack) {
-    printf("\nStack (%d):\n", (stack->top) + 1); // size of stack
-
     // if stack is empty
     if (is_empty(stack)) {
         printf("Stack is empty.\n");
         return;
     }
-
+    
     // print element from top to bottom
+    printf("\nStack (%d):\n", (stack->top) + 1); // size of stack
     for (int i = stack->top; i >= 0; i--) {
         printf("\t%d\n", stack->arr[i]);
     }
