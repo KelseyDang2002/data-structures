@@ -123,7 +123,9 @@ int peek(Stack *stack) {
         printf("Stack is empty.\n");
         return -1;
     }
-    return stack->arr[stack->top]; // return top element of stack without removing it
+    
+    // return top element of stack without removing it
+    return printf("\nTop of stack: %d\n", stack->arr[stack->top]);
 }
 
 int main(int argc, char* argv[]) {
@@ -171,7 +173,7 @@ int main(int argc, char* argv[]) {
     pop(&stack);
     display_stack(&stack);
 
-    printf("\nTop of stack: %d\n", peek(&stack));
+    peek(&stack);
 
     return 0;
 }
