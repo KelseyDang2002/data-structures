@@ -59,6 +59,8 @@ insertAtFirst:
     proportional to the input size are needed.
 */
 void insertAtFirst(struct Node** head, int data) { // pointer to a pointer to head, value
+    printf("\nInserting %d at first node.\n", data);
+
     struct Node* newNode = createNode(data); // create new node with data
     /*
     links the new node to the current first node of the list (if it exists)
@@ -75,8 +77,28 @@ method to insert element at end position
 insertAtEnd:
     Time Complexity: O(n)
     Space Complexity: O(1)
+    Linear time to insert at the end because we need to traverse the entire list to find the last node.
+    Only one new node is created, and no extra space proportional to the input size is needed.
 */
-void insertAtEnd(struct Node** head, int data);
+void insertAtEnd(struct Node** head, int data) {
+    printf("\nInserting %d at end node.\n", data);
+
+    struct Node* newNode = createNode(data); // create new node with data
+
+    // if linked list is empty
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    struct Node* temp = *head; // temp pointer to traverse linked list
+
+    // keep traversing until the last node is found (temp->next == NULL)
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newNode; // set the next pointer to the new node
+}
 
 /*
 method to insert element at specific position
@@ -84,8 +106,51 @@ method to insert element at specific position
 insertAtPosition:
     Time Complexity: O(n)
     Space Complexity: O(1)
+    Linear time because it requires traversing the linked list until the desired position is reached.
+    Only one node is created, and no additional memory proportional to the list size is required.
 */
-void insertAtPosition(struct Node** head, int data, int position);
+void insertAtPosition(struct Node** head, int data, int position) {
+    printf("\nInserting %d at index %d.\n", data, position);
+
+    struct Node* newNode = createNode(data);
+
+    // if position is at the beginning of the linked list
+    if (position == 0) {
+        insertAtFirst(head, data);
+        return;
+    }
+
+    struct Node* temp = *head; // temp pointer to traverse linked list
+
+    /*
+    traverse linked list to find the node just before the target position
+    the loop stops when temp becomes NULL (end of list) or when i == position-1
+    which indicates temp now points to the node just before the target position
+    the insertion needs to link the new node to the node at position, so we stop
+    traversal at position-1
+    */
+    for (int i = 0; temp != NULL && i < position - 1; i++) {
+        temp = temp->next;
+    }
+
+    // if position out of range
+    if (temp == NULL) {
+        printf("\nPosition out of range.\n");
+        free(newNode); // free memory allocated for newNode to avoid a memory leak
+        return;
+    }
+    
+    /*
+    sets the nex pointer of newNode to point to the node that currently comes after temp
+    this ensures that newNode takes the place of the node that was previously at position
+    */
+   newNode->next = temp->next;
+   /*
+   sets the next pointer of temp (the node at position - 1) to point to newNode
+   the newNode is now inserted between temp and the orginial node at position
+   */
+   temp->next = newNode;
+}
 
 /*
 method to delete element at first position
@@ -120,6 +185,15 @@ int main(int argc, char* argv[]) {
     display_linked_list(head);
 
     insertAtFirst(&head, 10);
+    display_linked_list(head);
+
+    insertAtFirst(&head, 5);
+    display_linked_list(head);
+
+    insertAtEnd(&head, 100);
+    display_linked_list(head);
+
+    insertAtPosition(&head, 80, 2);
     display_linked_list(head);
 
     return 0;
