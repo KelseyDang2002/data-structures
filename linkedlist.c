@@ -158,8 +158,22 @@ method to delete element at first position
 deleteAtFirst:
     Time Complexity: O(1)
     Space Complexity: O(1)
+    This is a constant-time operation as it only involves updating a single pointer.
+    No additional memory s required for this operation.
 */
-void deleteAtFirst(struct Node** head);
+void deleteAtFirst(struct Node** head) {
+    // if list is empty
+    if (*head == NULL) {
+        printf("\nList is empty.\n");
+        return;
+    }
+
+    // create a temp pointer to to store the address of the current head node
+    printf("\nDeleting first node.\n");
+    struct Node* temp = *head;
+    *head = temp->next; // update the head pointer to point to the second node in the linked list
+    free(temp); // free the memory allocated by the original head node
+}
 
 /*
 method to delete element at end position
@@ -167,8 +181,38 @@ method to delete element at end position
 deleteAtEnd:
     Time Complexity: O(n)
     Space Complexity: O(1)
+    Deleting the last node requires traversing through the entrire list to find the second
+    to last node which takes linear time.
+    No additional memory is required for this operation.
 */
-void deleteAtEnd(struct Node** head);
+void deleteAtEnd(struct Node** head) {
+    // if list is empty
+    if (*head == NULL) {
+        printf("\nList is empty.\n");
+        return;
+    }
+
+    printf("\nDeleting end node.\n");
+    struct Node* temp = *head;
+
+    // if there is only one node in the linked list (first node)
+    if (temp->next == NULL) {
+        free(temp); // free the memory allocated for that single node
+        *head = NULL; // make the list empty
+        return;
+    }
+
+    /*
+    traverse thtough the linked list to find the second to last node whose next
+    pointer points to the last node
+    */ 
+    while(temp->next->next != NULL) {
+        temp = temp->next; // move temp pointer to the next node
+    }
+    free(temp->next); // free the memory of the last node
+    // set the next pointer of the second to last node (temp) to NULL, making it the new last node
+    temp->next = NULL; 
+}
 
 /*
 method to delete element at specific position
@@ -176,8 +220,58 @@ method to delete element at specific position
 deleteAtPosition:
     Time Complexity: O(n)
     Space Complexity: O(1)
+    Deleting a node at a specific position requires traversing through the list to find the
+    specified node, which takes linear time.
+    No additional memory is required for this operation.
 */
-void deleteAtPosition(struct Node** head, int position);
+void deleteAtPosition(struct Node** head, int position) {
+    // if list is empty
+    if (*head == NULL) {
+        printf("\nList is empty.\n");
+        return;
+    }
+
+    printf("\nDeleting node at index %d.\n", position);
+    struct Node* temp = *head;
+
+    // if there is only one node in the linked list
+    if (position == 0) {
+        deleteAtFirst(head);
+        return;
+    }
+
+    /*
+    traverse linked list to find the node just before the target position
+    the loop stops when temp becomes NULL (end of list) or when i == position-1
+    which indicates temp now points to the node just before the target position
+    the insertion needs to link the new node to the node at position, so we stop
+    traversal at position-1
+    */
+    for (int i = 0; temp != NULL && i < position - 1; i++) {
+        temp = temp->next; // move temp pointer to the next node
+    }
+
+    /*
+    if position is out of range
+    temp becomes NULL when the loop has traversed the entire list and the position-1 does not exist
+    this happens when the position is greater than the size of the linked list
+    if temp->next == NULL, then temp points to a valid node but its next pointer is NULL itself
+    */
+    if (temp == NULL || temp->next == NULL) {
+        printf("\nPosition is out of range.\n");
+        return;
+    }
+    
+    /*
+    temp->next points to the node to be deleted
+    temp->next->next refers to the node following the one being deleted
+    next is used to temporarily store this node so that the link can be re-established later
+    */ 
+    struct Node* next = temp->next->next;
+    // free the memory of the node pointed to by temp->next (the node being deleted)
+    free(temp->next);
+    temp->next = next; // redirect the next pointer of temp node to skip over the deleted node
+}
 
 // main
 int main(int argc, char* argv[]) {
@@ -194,6 +288,18 @@ int main(int argc, char* argv[]) {
     display_linked_list(head);
 
     insertAtPosition(&head, 80, 2);
+    display_linked_list(head);
+
+    insertAtPosition(&head, 90, 3);
+    display_linked_list(head);
+
+    deleteAtFirst(&head);
+    display_linked_list(head);
+
+    deleteAtEnd(&head);
+    display_linked_list(head);
+
+    deleteAtPosition(&head, 1);
     display_linked_list(head);
 
     return 0;
