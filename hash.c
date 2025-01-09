@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 
 #define MAX_NAME 256
 #define TABLE_SIZE 10
+#define DELETED_NODE (HashItem*)(0xFFFFFFFFFFFFFFFFUL)
 
 // class for items that the hash table will store
 typedef struct HashItem {
@@ -55,14 +57,16 @@ bool insert(HashItem *item) {
     // compute hash of the name
     int index = hashFunction(item->name);
 
-    // check if the index is already occupied
-    if (hashTable[index] != NULL) {
-        return false;
-    }
+    // loop to find next open slot
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        int try = (i + index) % TABLE_SIZE;
 
-    // if a spot in the hash table is available
-    hashTable[index] = item;
-    return true;
+        if (hashTable[try] == NULL || hashTable[try] == DELETED_NODE) {
+            hashTable[try] = item;
+            return true;
+        }
+    }
+    return false;
 }
 
 /*
@@ -71,20 +75,46 @@ method to find a hash item in the hash table by name
 HashItem *lookup(char *name) {
     int index = hashFunction(name);
 
-    // if the name in the hash table matches the name lookup
-    if (hashTable[index] != NULL && 
-    strncmp(hashTable[index]->name, name, TABLE_SIZE) == 0) {
-        return hashTable[index];
-    } else {
-        return NULL;
+    // start at the index the hash function outputted, then keep iterating if there is a match
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        int try = (index + 1) % TABLE_SIZE;
+
+        if (hashTable[try] == NULL) {
+            return false; // not here
+        }
+
+        if (hashTable[try] == DELETED_NODE) continue;
+
+        // if the name in the hash table matches the name lookup
+        if (hashTable[try] != NULL && strncmp(hashTable[try]->name, name, TABLE_SIZE) == 0) {
+            return hashTable[try];
+        }
     }
+    return NULL;
 }
 
 /*
 method to remove a hash item from the hash table
 */
 HashItem *delete(char *name) {
-    //
+    int index = hashFunction(name);
+
+    // start at the index the hash function outputted, then keep iterating if there is a match
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        int try = (index + i) % TABLE_SIZE;
+
+        if (hashTable[try] == NULL) return NULL;
+
+        if (hashTable[try] == DELETED_NODE) continue;
+
+        // if the name in the hash table matches the name lookup
+        if (hashTable[try] != NULL && strncmp(hashTable[try]->name, name, TABLE_SIZE) == 0) {
+            HashItem *tmp = hashTable[try];
+            hashTable[try] = DELETED_NODE;
+            return tmp;
+        }
+    }
+    return NULL;
 }
 
 // method to display the current hash table
@@ -94,6 +124,8 @@ void display() {
     for (int i = 0; i < TABLE_SIZE; i++) {
         if (hashTable[i] == NULL) {
             printf("\t%i\t---\n", i);
+        } else if (hashTable[i] == DELETED_NODE) {
+            printf("\t%i\t--- <deleted>\n", i);
         } else {
             printf("\t%i\t%s\n", i, hashTable[i]->name);
         }
@@ -108,37 +140,49 @@ int main(int argc, char* argv[]) {
     HashItem jacob = {.name = "Jacob", .age = 256};
     HashItem kate = {.name = "Kate", .age = 27};
     HashItem mpho = {.name = "Mpho", .age = 14};
+    HashItem sarah = {.name = "Sarah", .age = 54};
+    HashItem edna = {.name = "Edna", .age = 15};
+    HashItem maren = {.name = "Maren", .age = 25};
+    HashItem eliza = {.name = "Eliza", .age = 34};
+    HashItem robert = {.name = "Robert", .age = 1};
+    HashItem jane = {.name = "Jane", .age = 75};
 
     insert(&jacob);
     insert(&kate);
     insert(&mpho);
-
+    insert(&sarah);
+    insert(&edna);
+    insert(&maren);
+    insert(&eliza);
+    insert(&robert);
+    insert(&jane);
+    
     display();
-
+    
     HashItem *tmp = lookup("Mpho");
     if (tmp == NULL) {
         printf("Not found.\n");
     } else {
         printf("Found %s\n", tmp->name);
     }
-
+    
     tmp = lookup("George");
     if (tmp == NULL) {
         printf("Not found.\n");
     } else {
         printf("Found %s\n", tmp->name);
     }
+    
+    delete("Mpho");
+    
+    tmp = lookup("Mpho");
+    if (tmp == NULL) {
+        printf("Not found.\n");
+    } else {
+        printf("Found %s\n", tmp->name);
+    }
 
-    // test different inputs for the hash function
-    // printf("Jacob => %d\n", hashFunction("Jacob"));
-    // printf("Natalie => %d\n", hashFunction("Natalie"));
-    // printf("Sara => %d\n", hashFunction("Sara"));
-    // printf("Mpho => %d\n", hashFunction("Mpho"));
-    // printf("Tebogo => %d\n", hashFunction("Tebogo"));
-    // printf("Ron => %d\n", hashFunction("Ron"));
-    // printf("Jane => %d\n", hashFunction("Jane"));
-    // printf("Maren => %d\n", hashFunction("Maren"));
-    // printf("Bill => %d\n", hashFunction("Bill"));
+    display();
 
     return 0;
 }
