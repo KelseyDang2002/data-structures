@@ -137,20 +137,24 @@ char* search(struct HashMap* map, char* key) {
     int bucketIndex = hashFunction(map, key);
 
     // assign head of linked list at bucket index to new variable
+    // bucketHead will be used to traverse linked list
     struct Node* bucketHead = map->arr[bucketIndex];
 
+    // travere linked list at the bucket index until end of list
     while (bucketHead != NULL) {
         // key is found at the bucket (head of the linked list)
+        // key in the current node matches search key
         if (bucketHead->key == key) {
-            return bucketHead->data;
+            return bucketHead->data; // return associated data
         }
 
-        bucketHead = bucketHead->next; // if not at bucket, go to next bucket
+        bucketHead = bucketHead->next; // if key does not match, move to next node
     }
 
     // if no key is found in hash map
-    char* errorMsg = (char*)malloc(sizeof(char) * 25);
-    errorMsg = "Oops! No data found.\n";
+    char* msg = "No data found.\n";
+    char* errorMsg = (char*)malloc(sizeof(char) * (strlen(errorMsg) + 1));
+    strcpy(errorMsg, msg);
     return errorMsg;
 }
 
@@ -169,6 +173,7 @@ int main(int argc, char* argv[]) {
     printf("Data: %s\n", search(map, "username"));
     printf("Data: %s\n", search(map, "age"));
     printf("Data: %s\n", search(map, "role"));
+    printf("Data: %s\n", search(map, "invalid_key"));
 
     return 0;
 }
